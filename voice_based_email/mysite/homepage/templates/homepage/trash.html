@@ -32,10 +32,13 @@
 					<tr>
 						<td>
 							
-								<input href="options.html"class="btn btn-primary btn-xl rounded-pill mt-5" 
-								role="button" 
-								style="width: 250px; background-color: black;" type="submit"  
-								value="BACK">
+							<a href="{% url 'homepage:options' %}">
+								<input class="btn btn-primary btn-xl rounded-pill mt-5"
+									role="button"
+									style="width: 250px; background-color: black;"
+									type="button"
+									value="BACK">
+							</a>
 						</td>
 					</tr>
 						
@@ -43,10 +46,13 @@
 					<tr>
 						<td>
 							
-								<input href="login.html"class="btn btn-primary btn-xl rounded-pill mt-5"
-								role="button"
-								style="width: 250px; background-color: black;"  type="submit" 
-								value="LOGOUT">
+							<a href="{% url 'homepage:login' %}">
+								<input class="btn btn-primary btn-xl rounded-pill mt-5"
+									role="button"
+									style="width: 250px; background-color: black;"
+									type="button"
+									value="LOGOUT">
+							</a>
 						</td>
 					</tr>
 						
@@ -60,11 +66,7 @@
 			<div class="bg-circle-3 bg-circle"></div>
 			<div class="bg-circle-4 bg-circle"></div>
 		</header>
-		<footer class="py-5 bg-black">
-			<div class="container">
-				<p class="text-center text-white m-0 small">Copyright&nbsp;© Voice Based Email&nbsp;</p>
-			</div>
-		</footer>
+		
 	<script>
 	function SendPostRequestTrash(event){
 		$.ajax({

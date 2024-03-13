@@ -22,59 +22,63 @@
 				<div class ="options">
 
 				
-				<table align="center" >
-					<tr>
-						<td>
-							<a href="compose.html"> 
-								<input href="compose.html"class="btn btn-primary btn-xl rounded-pill mt-5"
-								class="button" role="button"
-								style="width: 250px; background-color: black;" type="submit" 
-								value="COMPOSE"  style="background-color: black;"></a>
-						</td>
-					</tr>
-						
-					<tr>
-						<td>
-							<a href="inbox.html"> 
-								<input href="inbox.html"class="btn btn-primary btn-xl rounded-pill mt-5"
-								 role="button"
-								 style="width: 250px; background-color: black;" type="submit" 
-								value="INBOX" ></a>
-						</td>
-
-					</tr>
-						
-					<tr>
-						<td>
-							<a href="sent.html"> 
-								<input href="sent.html"class="btn btn-primary btn-xl rounded-pill mt-5" 
-								role="button" 
-								style="width: 250px; background-color: black;" type="submit"  
-								value="SENT"></a>
-						</td>
-					</tr>
-						
-					<tr>
-						<td>
-							<a href="trash.html"> 
-								<input href="trash.html"class="btn btn-primary btn-xl rounded-pill mt-5"
-								role="button" 
-								style="width: 250px; background-color: black;"  type="submit" 
-								value="TRASH"></a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<a href="login.html"> 
-								<input href="logout.html"class="btn btn-primary btn-xl rounded-pill mt-5"
-								role="button"
-								style="width: 250px; background-color: black;"  type="submit" 
-								value="LOGOUT"></a>
-						</td>
-					</tr>
-						
-
-				</table>
+					<table align="center">
+						<tr>
+							<td>
+								<a href="{% url 'homepage:compose' %}">
+									<input class="btn btn-primary btn-xl rounded-pill mt-5"
+										role="button"
+										style="width: 250px; background-color: black;"
+										type="button"
+										value="COMPOSE">
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="{% url 'homepage:inbox' %}">
+									<input class="btn btn-primary btn-xl rounded-pill mt-5"
+										role="button"
+										style="width: 250px; background-color: black;"
+										type="button"
+										value="INBOX">
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="{% url 'homepage:sent' %}">
+									<input class="btn btn-primary btn-xl rounded-pill mt-5"
+										role="button"
+										style="width: 250px; background-color: black;"
+										type="button"
+										value="SENT">
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="{% url 'homepage:trash' %}">
+									<input class="btn btn-primary btn-xl rounded-pill mt-5"
+										role="button"
+										style="width: 250px; background-color: black;"
+										type="button"
+										value="TRASH">
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<a href="{% url 'homepage:login' %}">
+									<input class="btn btn-primary btn-xl rounded-pill mt-5"
+										role="button"
+										style="width: 250px; background-color: black;"
+										type="button"
+										value="LOGOUT">
+								</a>
+							</td>
+						</tr>
+					</table>
 			</div>
 		</div>
 						
@@ -85,11 +89,7 @@
 			<div class="bg-circle-3 bg-circle"></div>
 			<div class="bg-circle-4 bg-circle"></div>
 		</header>
-		<footer class="py-5 bg-black">
-			<div class="container">
-				<p class="text-center text-white m-0 small">Copyright&nbsp;© Voice Based Email&nbsp;</p>
-			</div>
-		</footer>
+		
 	<script>
 	function SendPostRequestOptions(event){
 		$.ajax({
