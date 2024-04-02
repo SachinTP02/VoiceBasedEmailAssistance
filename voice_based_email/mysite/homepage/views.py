@@ -11,6 +11,7 @@ from django.http import HttpResponse
 import speech_recognition as sr
 import smtplib
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
@@ -29,7 +30,7 @@ s = smtplib.SMTP('smtp.gmail.com', 587)
 s.starttls()
 imap_url = 'imap.gmail.com'
 conn = imaplib.IMAP4_SSL(imap_url)
-attachment_dir = 'C:/Users/Chacko/Desktop/'
+attachment_dir = 'C:/Users/SACHIN/OneDrive/Desktop/'
 
 def texttospeech(text, filename):
     filename = filename + '.mp3'
@@ -183,7 +184,7 @@ def options_view(request):
             i = i + str(1)
             say = speechtotext(10)
             print(f"yes/no: {say}")
-            if say == 'No' or say == 'no' or say=='noo' or say=='nyo':
+            if say == 'No' or say == 'no' or say=='noo' or say=='N':
                 flag = False
         texttospeech("Enter your desired action", file + i)
         i = i + str(1)
@@ -320,8 +321,11 @@ def compose_view(request):
         i = i + str(1)
         x = speechtotext(3)
         x = x.lower()
+        
         print(x)
-        if x == 'attachment' or x=='attach':
+
+
+        if x == 'attachment' or x == 'attach':
             texttospeech("If you want to record an audio and send as an attachment say the keyword continue", file + i)
             i = i + str(1)
             say = speechtotext(2)
@@ -330,6 +334,7 @@ def compose_view(request):
             if say == 'continue' or say == 'continew':
                 texttospeech("Enter filename.", file + i)
                 i = i + str(1)
+                filename = speechtotext(5)
                 print(filename)
                 filename = filename.lower()
                 filename = filename + '.mp3'
@@ -343,15 +348,14 @@ def compose_view(request):
                     try:
                         tts = gTTS(text=audio_msg, lang='en', slow=False)
                         tts.save(filename)
+                        attachment = open(filename, "rb")
+                        part = MIMEApplication(attachment.read(), Name=filename)
+                        part['Content-Disposition'] = f'attachment; filename="{filename}"'
+                        msg.attach(part)
                         flagconf = False
-                    except:
+                    except Exception as e:
+                        print(f'Error: {e}')
                         print('Trying again')
-                attachment = open(filename, "rb")
-                p = MIMEBase('application', 'octet-stream')
-                p.set_payload((attachment).read())
-                encoders.encode_base64(p)
-                p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
-                msg.attach(p)
             elif say == 'no' or say == 'n':
                 texttospeech("Enter filename with extension", file + i)
                 i = i + str(1)
@@ -360,13 +364,63 @@ def compose_view(request):
                 filename = filename.replace(' ', '')
                 filename = filename.lower()
                 filename = convert_special_char(filename)
+                filename = 'C:/Users/SACHIN/OneDrive/Desktop/Projects/major/voicebasedemail/voice_based_email/mysite/'  + filename
+                try:
+                    attachment = open(filename, "rb")
+                    part = MIMEApplication(attachment.read(), Name=filename)
+                    part['Content-Disposition'] = f'attachment; filename="{filename}"'
+                    msg.attach(part)
+                except Exception as e:
+                    print(f'Error: {e}')
+
+
+        # if x == 'attachment' or x=='attach':
+        #     texttospeech("If you want to record an audio and send as an attachment say the keyword continue", file + i)
+        #     i = i + str(1)
+        #     say = speechtotext(2)
+        #     say = say.lower()
+        #     print(say)
+        #     if say == 'continue' or say == 'continew':
+        #         texttospeech("Enter filename.", file + i)
+        #         i = i + str(1)
+        #         filename = speechtotext(5)
+        #         print(filename)
+        #         filename = filename.lower()
+        #         filename = filename + '.mp3'
+        #         filename = filename.replace(' ', '')
+        #         print(filename)
+        #         texttospeech("Speak your audio message.", file + i)
+        #         i = i + str(1)
+        #         audio_msg = speechtotext(10)
+        #         flagconf = True
+        #         while flagconf:
+        #             try:
+        #                 tts = gTTS(text=audio_msg, lang='en', slow=False)
+        #                 tts.save(filename)
+        #                 flagconf = False
+        #             except:
+        #                 print('Trying again')
+        #         attachment = open(filename, "rb")
+        #         p = MIMEBase('application', 'octet-stream')
+        #         p.set_payload((attachment).read())
+        #         encoders.encode_base64(p)
+        #         p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+        #         msg.attach(p)
+        #     elif say == 'no' or say == 'n':
+        #         texttospeech("Enter filename with extension", file + i)
+        #         i = i + str(1)
+        #         filename = speechtotext(5)
+        #         filename = filename.strip()
+        #         filename = filename.replace(' ', '')
+        #         filename = filename.lower()
+        #         filename = convert_special_char(filename)
                 
-                attachment = open(filename, "rb")
-                p = MIMEBase('application', 'octet-stream')
-                p.set_payload((attachment).read())
-                encoders.encode_base64(p)
-                p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
-                msg.attach(p)
+        #         attachment = open(filename, "rb")
+        #         p = MIMEBase('application', 'octet-stream')
+        #         p.set_payload((attachment).read())
+        #         encoders.encode_base64(p)
+        #         p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+        #         msg.attach(p)
         try:
             server = smtplib.SMTP("smtp.gmail.com", 587)
             server.starttls()  # Start TLS encryption
@@ -610,7 +664,7 @@ def get_attachment(msg):
 def reply_mail(msg_id, message):
     global i,s
     TO_ADDRESS = message['From']
-    FROM_ADDRESS = addr
+    FROM_ADDRESS = 'majorprojectit2024@gmail.com'
     msg = email.mime.multipart.MIMEMultipart()
     msg['to'] = TO_ADDRESS
     msg['from'] = FROM_ADDRESS
@@ -648,11 +702,11 @@ def frwd_mail(item, message):
                 texttospeech("Enter receiver's email address", file + i)
                 i = i + str(1)
                 to = speechtotext(15)
-                texttospeech("You meant " + to + " say yes to confirm or no to enter again", file + i)
+                texttospeech("You meant " + to + " say yes or correct to confirm or no to enter again", file + i)
                 i = i + str(1)
                 yn = speechtotext(3)
                 yn = yn.lower()
-                if yn == 'yes':
+                if yn == 'yes' or yn == 'correct':
                     to = to.strip()
                     to = to.replace(' ', '')
                     to = to.lower()
@@ -660,15 +714,10 @@ def frwd_mail(item, message):
                     print(to)
                     newtoaddr.append(to)
                     break
-            texttospeech("Do you want to add more recepients?", file + i)
-            i = i + str(1)
-            ans1 = speechtotext(3)
-            ans1 = ans1.lower()
-            print(ans1)
-            if ans1 == "no" :
+                
                 flag1 = False
 
-        message['From'] = addr
+        message['From'] = 'majorprojectit2024@gmail.com'
         message['To'] = ",".join(newtoaddr)
         try:
             s.sendmail(addr, newtoaddr, message.as_string())
@@ -828,6 +877,155 @@ def read_mails(mail_list,folder):
     #     if ans == "no":
     #         flag = False
 
+
+
+def read_mails2(mail_list,folder):
+    global s, i
+    mail_list.reverse()
+    mail_count = 0
+    to_read_list = list()
+    print(folder)
+    for item in mail_list:
+        result, email_data = conn.fetch(item, '(RFC822)')
+        raw_email = email_data[0][1].decode()
+        message = email.message_from_string(raw_email)
+        To = message['To']
+        From = message['From']
+        Subject = message['Subject']
+        Msg_id = message['Message-ID']
+        texttospeech("Email number " + str(mail_count + 1) + "    .The mail is from " + From + " to " + To + "  . The subject of the mail is " + Subject, file + i)
+        i = i + str(1)
+        print('message id= ', Msg_id)
+        print('From :', From)
+        print('To :', To)
+        print('Subject :', Subject)
+        print("\n")
+        to_read_list.append(Msg_id)
+        mail_count = mail_count + 1
+
+    flag = True
+    while flag :
+        # n = 0
+        # flag1 = True
+        # while flag1:
+        #     texttospeech("Enter the email number of mail you want to read.",file + i)
+        #     i = i + str(1)
+        #     n = speechtotext(2)
+        #     print(n)
+        #     texttospeech("You meant " + str(n) + ". Say yes or no.", file + i)
+        #     i = i + str(1)
+        #     say = speechtotext(2)
+        #     say = say.lower()
+        #     if say == 'yes':
+        #         flag1 = False
+        # n = len(mail_list)
+        # msgid = to_read_list[n - 1]
+        # print("message id is =", msgid)
+        # typ, data = conn.search(None, '(HEADER Message-ID "%s")' % msgid)
+        # data = data[0]
+        # result, email_data = conn.fetch(data, '(RFC822)')
+        # raw_email = email_data[0][1].decode()
+        # message = email.message_from_string(raw_email)
+        # To = message['To']
+        # From = message['From']
+        # Subject = message['Subject']
+        # Msg_id = message['Message-ID']
+        # print('From :', From)
+        # print('To :', To)
+        # print('Subject :', Subject)
+        # texttospeech("The mail is from " + From + " to " + To + "  . The subject of the mail is " + Subject, file + i)
+        # i = i + str(1)
+        Body = get_body(message)
+        Body = Body.decode()
+        Body = re.sub('<.*?>', '', Body)
+        Body = os.linesep.join([s for s in Body.splitlines() if s])
+        if Body != '':
+            texttospeech(Body, file + i)
+            i = i + str(1)
+        else:
+            texttospeech("Body is empty.", file + i)
+            i = i + str(1)
+        get_attachment(message)
+
+        if folder == 'inbox':
+            texttospeech("Do you want to reply to this mail? Say reply to erply else say no. ", file + i)
+            i = i + str(1)
+            ans = speechtotext(3)
+            ans = ans.lower()
+            print(ans)
+            if ans == "reply" or ans == "replay":
+                reply_mail(Msg_id, message)
+
+        if folder == 'inbox' or folder == 'sent':
+            texttospeech("Do you want to forward this mail to anyone? Say forward to forward else say no. ", file + i)
+            i = i + str(1)
+            ans = speechtotext(3)
+            ans = ans.lower()
+            print(ans)
+            if ans == "forward":
+                frwd_mail(Msg_id, message)
+
+
+        if folder == 'inbox' or folder == 'sent':
+            texttospeech("Do you want to delete this mail? Say delete to delete else say no. ", file + i)
+            i = i + str(1)
+            ans = speechtotext(3)
+            ans = ans.lower()
+            print(ans)
+            if ans == "delete":
+                try:
+                    conn.store(data, '+X-GM-LABELS', '\\Trash')
+                    conn.expunge()
+                    texttospeech("The mail has been deleted successfully.", file + i)
+                    i = i + str(1)
+                    print("mail deleted")
+                except:
+                    texttospeech("Sorry, could not delete this mail. Please try again later.", file + i)
+                    i = i + str(1)
+
+        if folder == 'trash':
+            texttospeech("Do you want to delete this mail? Say Delete to delete else say no. ", file + i)
+            i = i + str(1)
+            ans = speechtotext(3)
+            ans = ans.lower()
+            print(ans)
+            if ans == "delete":
+                try:
+                    conn.store(data, '+FLAGS', '\\Deleted')
+                    conn.expunge()
+                    texttospeech("The mail has been deleted permanently.", file + i)
+                    i = i + str(1)
+                    print("mail deleted")
+                except:
+                    texttospeech("Sorry, could not delete this mail. Please try again later.", file + i)
+                    i = i + str(1)
+        
+            texttospeech("Do you want to restore this mail? Say restore to restore else say no. ", file + i)
+            i = i + str(1)
+            ans = speechtotext(3)
+            ans = ans.lower()
+            print(ans)
+            if ans == "restore":
+                try:
+                    conn.copy(data, 'INBOX')  # copy to inbox
+                    conn.store(data, '+FLAGS', '\\DELETED') #Mark as deleted
+                    texttospeech("The mail has been restored.", file + i)
+                    i = i + str(1)
+                    conn.expunge()
+                    print("mail restored")
+                except:
+                    texttospeech("Sorry, could not restore this mail. Please try again later.", file + i)
+                    i = i + str(1)               
+        texttospeech("Email ends here.", file + i)
+        i = i + str(1)
+        texttospeech("Do you want to read more mails?", file + i)
+        i = i + str(1)
+        ans = speechtotext(2)
+        ans = ans.lower()
+        if ans == "no":
+            flag = False
+
+
 def search_specific_mail(folder,key,value,foldername):
     global i, conn
     conn.select(folder)
@@ -840,7 +1038,7 @@ def search_specific_mail(folder,key,value,foldername):
         texttospeech("There are no emails with this email ID.", file + i)
         i = i + str(1)
     else:
-        read_mails(mail_list,foldername)
+        read_mails2(mail_list,foldername)
 
 def inbox_view(request):
     global i, addr, passwrd, conn
